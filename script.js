@@ -9,6 +9,8 @@ var timeGauge = document.getElementById("timer");
 var progress = document.getElementById("progress");
 var scoreDiv = document.getElementById("score");
 var choiceDiv = document.getElementById("choices");
+var intials = document.getElementById("intials")
+
 
 let questions = [
     {
@@ -63,7 +65,9 @@ var lastQuestion = questions.length -1;
 let runningQuestion = 0;
 let count = questions.length * 15;
 let TIMER;
-let score = 0;
+let rightAnswers = 0;
+let wrongAnswers = 0;
+
 
 function renderQuestion(){
     let q = questions[runningQuestion];
@@ -73,6 +77,7 @@ function renderQuestion(){
     choiceB.innerHTML = q.answer2;
     choiceC.innerHTML = q.answer3;
     choiceD.innerHTML = q.answer4;
+    
 }
 
 start.addEventListener("click", startQuiz);
@@ -105,37 +110,58 @@ function renderProgress(){
      }else{
          
         clearInterval(TIMER);
-        document.getElementById("score").setAttribute("style","display:block");
+        reset()
+        
+     }
+ }
+ function reset(){
+        
         questionDiv.setAttribute("style","display:none");
         choiceA.setAttribute("style","display:none");
         choiceB.setAttribute("style","display:none");
         choiceC.setAttribute("style","display:none");
         choiceD.setAttribute("style","display:none")
-        
-     }
  }
 
 function checkAnswer(answer){
     if(answer === questions[runningQuestion].answer){
          
-        answerIsCorrect();
+         answerIsRight();
+         scoreDiv.setAttribute("style","display:block");
+        console.log("good job")
     }else{
         answerIsWrong();
+        scoreDiv.setAttribute("style","display:block");
     }
     
     if(runningQuestion < lastQuestion){
         runningQuestion++;
         renderQuestion();
-    }else{
+        console.log(runningQuestion, lastQuestion);
+
+    }else if(runningQuestion===lastQuestion){
         clearInterval(TIMER)
+        reset()
     }
 }
-
-function answerIsCorrect(){
-    document.getElementById(runningQuestion).style.backgroundColor = "#0f0";
+function answerIsRight(){
+    rightAnswers++
+    let score = [rightAnswers, wrongAnswers];
+    progress.innerHTML = score
 }
 
 function answerIsWrong(){
-    document.getElementById(runningQuestion).style.backgroundColor = "#f00";
-    count = count -10
+   wrongAnswers++
+   let score = [rightAnswers, wrongAnswers];
+   progress.innerHTML = score
+     count = count -10
+}
+function save(){
+    localStorage.setItem("finaleScore", progress.innerHTML)
+    localStorage.setItem("intials", intials.value);
+    let saveIntials = localStorage.getItem("intials");
+    let saveScore = localStorage.getItem("finaleScore")
+    console.log(saveScore, saveIntials)
+    progress.innerHTML = saveScore
+    scoreDiv.innerHTML = saveIntials
 }
