@@ -1,14 +1,14 @@
 var start = document.getElementById("start");
-var quiz = document.getElementById("quiz");
-var question = document.getElementById("question");
+var questionDiv = document.getElementById("question");
 var choiceA = document.getElementById("1");
 var choiceB = document.getElementById("2");
 var choiceC = document.getElementById("3");
 var choiceD = document.getElementById("4");
 var counter = document.getElementById("counter");
-var timeGauge = document.getElementById("timeGauge");
+var timeGauge = document.getElementById("timer");
 var progress = document.getElementById("progress");
-var csoreDiv = document.getElementById("score");
+var scoreDiv = document.getElementById("score");
+var choiceDiv = document.getElementById("choices");
 
 let questions = [
     {
@@ -61,31 +61,33 @@ let questions = [
 
 var lastQuestion = questions.length -1;
 let runningQuestion = 0;
-let count = 0;
-var questionTime = 10; // 10s
-var gaugeWidth = 150; // 150px
-var gaugeUnit = gaugeWidth / questionTime;
+let count = questions.length * 15;
 let TIMER;
 let score = 0;
 
 function renderQuestion(){
     let q = questions[runningQuestion];
 
-    questions.innerHTML = "<p>"+ q.question +"</p>";
-    choiceA.innerHTML = q.choiceA;
-    choiceB.innerHTML = q.choiceB;
-    choiceC.innerHTML = q.choiceC;
-    choiceD.innerHTML = q.choiceD;
+    questionDiv.innerHTML = "<p>"+ q.question +"</p>";
+    choiceA.innerHTML = q.answer1;
+    choiceB.innerHTML = q.answer2;
+    choiceC.innerHTML = q.answer3;
+    choiceD.innerHTML = q.answer4;
 }
 
 start.addEventListener("click", startQuiz);
 
 function startQuiz(){
-    start.style.display = "none";
+   
     renderQuestion();
-    quiz.style.display = "block";
+   
     renderProgress();
     renderCounter();
+    questionDiv.classList.remove("hide")
+    choiceDiv.classList.remove("hide")
+    
+    timeGauge.classList.remove("hide")
+    start.classList.add("hide")
     TIMER = setInterval(renderCounter, 1000)
 }
 
@@ -97,37 +99,35 @@ function renderProgress(){
 
 
  function renderCounter(){
-     if(count <= questionTime){
+     if(count > 0) {
          counter.innerHTML = count;
-         timeGauge.style.width = count * gaugeUnit + "px";
-         count++
+         count--
      }else{
-         count = 0;
-         answerIsWrong();
-         if(runningQuestion < lastQuestion){
-            runningQuestion++;
-            renderQuestion();
-        }else{
-            clearInterval(TIMER)
-            scoreRender();
-        }
+         
+        clearInterval(TIMER);
+        document.getElementById("score").setAttribute("style","display:block");
+        questionDiv.setAttribute("style","display:none");
+        choiceA.setAttribute("style","display:none");
+        choiceB.setAttribute("style","display:none");
+        choiceC.setAttribute("style","display:none");
+        choiceD.setAttribute("style","display:none")
+        
      }
  }
 
-function checkAnswer(){
-    if(answer == questions[runningQuestion].correct){
-        score++
+function checkAnswer(answer){
+    if(answer === questions[runningQuestion].answer){
+         
         answerIsCorrect();
     }else{
         answerIsWrong();
     }
-    count = 0;
+    
     if(runningQuestion < lastQuestion){
         runningQuestion++;
         renderQuestion();
     }else{
         clearInterval(TIMER)
-        scoreRender();
     }
 }
 
@@ -137,23 +137,5 @@ function answerIsCorrect(){
 
 function answerIsWrong(){
     document.getElementById(runningQuestion).style.backgroundColor = "#f00";
+    count = count -10
 }
-
-function scoreRender(){
-    scoreDiv.style.display = "block";
-
-    var scorePerCent = Math.round(100 * score/questions.length);
-
-    scoreDiv.innerHTML += "<p>" + scorePerCent + "%</p>";
-}
-
-
-
-
-
-
-
-
-
-
-
