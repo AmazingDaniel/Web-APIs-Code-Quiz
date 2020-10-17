@@ -9,20 +9,23 @@
     <body>
         <div id="container">
             <div id="start">Start Ouiz</div>
-            <div id="quiz" style="display: none"></div>
-            <div id="choices">
+            <div id="quiz" ></div>
+            <div id=question class="hide"></div>
+            <div id="choices" class="hide">
                 <div class="choices" id="1" onclick="checkAnswer('1')"></div>
                 <div class="choices" id="2" onclick="checkAnswer('2')"></div>
                 <div class="choices" id="3" onclick="checkAnswer('3')"></div>
                 <div class="choices" id="4" onclick="checkAnswer('4')"></div>
             </div>
-            <div id="timer">
+            <div id="timer" class="hide">
                 <div id="counter"></div>
-                <div id="btimeGauge"></div>
                 <div id="timeGauge"></div>
             </div>
             <div id="progress"></div>
-            <div id="score" style="display: none"></div>
+            <div id="score" class="hide">
+               <input type="text" id="intials">
+               <button id="saveIntials">Save</button>
+            </div>
         </div>     
     <script src="script.js"></script>    
     </body>
